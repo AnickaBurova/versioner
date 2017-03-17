@@ -2,14 +2,27 @@
 Library         OperatingSystem
 Library         Process
 
-Test Setup      Touch               ${test_file}
-Test Teardown   Remove File         ${test_file}
+Test Setup      Create test files
+Test Teardown   Remove test files
 
 *** Variables ***
-${test_file} =  ${TEMPDIR}${/}test.py
+${python_file} =  ${TEMPDIR}${/}test.py
+${cpp_file} =  ${TEMPDIR}${/}test.cpp
+${haskell_file} =  ${TEMPDIR}${/}test.hs
+${test_version} =   0.1.2
 
-
+'
 *** Keywords ***
+Create test files
+    Copy file           python_test.py          ${python_file}
+    Copy file           haskell_test.cabal          ${haskell_file}
+    Copy file           cpp_test.cpp          ${cpp_file}
+
+Remove test files
+    Remove file         ${python_file}
+    Remove file         ${cpp_file}
+    Remove file         ${haskell_file}
+
 Python exec
     [Arguments]     ${python}   ${input}
     ${result} =     Run Process     ${python} versioner.py ${input}   shell=True
@@ -28,13 +41,13 @@ Failure
 
 Choose language
     [Arguments]     ${python}
-    Failure     ${python}       -l wrong ${test_file}
-    Success     ${python}       -l cpp ${test_file}
-    Success     ${python}       -l python ${test_file}
-    Success     ${python}       -l haskell ${test_file}
-    Success     ${python}       -l cPp ${test_file}
-    Success     ${python}       -l pYthon ${test_file}
-    Success     ${python}       -l hasKell ${test_file}
+    Failure     ${python}       -l wrong ${python_file}
+    Success     ${python}       -l cpp ${cpp_file}
+    Success     ${python}       -l python ${python_file}
+    Success     ${python}       -l haskell ${haskell_file}
+    Success     ${python}       -l cPp ${cpp_file}
+    Success     ${python}       -l pYthon ${python_file}
+    Success     ${python}       -l hasKell ${haskell_file}
 
 
 Set input file
