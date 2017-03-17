@@ -1,5 +1,6 @@
 import sys
 from optparse import OptionParser
+import os
 
 
 usage = "usage: %prog [options] file"
@@ -26,6 +27,7 @@ class Language:
 
     @staticmethod
     def parse( text ):
+        text = text.lower()
         d = {
             "python" : Language.Python,
             "haskell" : Language.Haskell,
@@ -39,12 +41,36 @@ class Language:
 
         return Language.Unknown
 
+try:
+    options.file_path = args[0]
+except:
+    sys.stderr.write("No input file!")
+    exit(2)
+
+if not os.path.isfile(options.file_path):
+    sys.stderr.write("{} not exists!".format(options.file_path))
+    exit(3)
+
+
 if options.language:
     lan = Language.parse(options.language)
     if lan == Language.Unknown:
         sys.stderr.write("Incorrect language, available languages: {}".format(Language.languages()))
         exit(1)
     options.language = lan
+else:
+    _, ext = os.path.splitext(options.file_path)
+    exts = {
+        ".py" : Language.Python,
+        ".hs" : Language.Haskell,
+        ".hpp" : Language.Cpp,
+        ".cpp" : Language.Cpp,
+    }
+    options.language = exts.get(ext, Language.Unknown)
+
+if options.language == Language.Unknown:
+    sys.stderr.write("Unknown language, cannot parse the file")
+    exit(4)
 
 
 print (options)
