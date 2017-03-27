@@ -3,27 +3,25 @@
 if [ "$1" == "uninstall" ]
 then
     echo "uninstalling versioner files, manually remove pre-commit from affected git repositories"
-    rm /usr/local/bin/versioner-install
-    rm /usr/local/bin/versioner-pre-commit
-    rm /usr/local/bin/versioner.py
-    rm /usr/local/bin/versioner-update
+    rm -v /usr/local/bin/versioner-install
+    rm -v /usr/local/bin/versioner-pre-commit
+    rm -v /usr/local/bin/versioner.py
+    rm -v /usr/local/bin/versioner-update
     exit 0
 fi
 
-if [ "$0" == "./install_versioner" ]
+if [ "$0" == "./versioner-install" ]
 then
-    echo "running app install"
+    echo "running app install..."
 
-    install versioner-install /usr/local/bin
-    install pre-commit /usr/local/bin/versioner-pre-commit
-    install versioner.py /usr/local/bin
-    install versioner-update /usr/local/bin
+    install -v versioner-install /usr/local/bin
+    install -v pre-commit /usr/local/bin/versioner-pre-commit
+    install -v versioner.py /usr/local/bin
+    install -v versioner-update /usr/local/bin
+
+    echo "installed"
     exit 0
 fi
-
-versioner_dir="$(dirname $0)"
-echo $versioner_dir
-exit 0
 
 
 if [ ! -d .git ]
@@ -44,10 +42,11 @@ echo "MAIN_VERSION_FILE=$main_file" > .versionrc
 
 versioner_dir="$(dirname $0)"
 
-ln -sf $versioner_dir/versioner.py versioner.py
-ln -sf $versioner_dir/version_update version_update
+#ln -sf $versioner_dir/versioner.py versioner.py
+#ln -sf $versioner_dir/version_update version_update
 
-ln -sf $versioner_dir/pre-commit .git/hooks/pre-commit
+ln -sf $versioner_dir/versioner-pre-commit .git/hooks/pre-commit
+echo ".versionrc" >> .gitignore
 
 echo Done
 

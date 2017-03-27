@@ -1,3 +1,5 @@
+#!/bin/env python
+
 import sys
 from optparse import OptionParser
 import os
@@ -163,7 +165,7 @@ if options.show:
     if upgraded:
         print ("Version has been upgraded from '{}.{}.{}.{}' to '{}.{}.{}.{}'".format(om,on,oa,ob,m,n,a,b))
     else:
-        print ("Version stays the same '{}.{}.{}.{}'".format(m,n,a,b))
+        print ("Current version is '{}.{}.{}.{}'".format(m,n,a,b))
     exit(0)
 
 orig, major, minor, maintenance, build = current_version

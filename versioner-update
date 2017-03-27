@@ -1,13 +1,24 @@
 #!/bin/bash
 
 
+if [ $# -eq 0 ]
+then
+    if [ -f ".versionrc" ]
+    then
+        source .versionrc
+        versioner.py $MAIN_VERSION_FILE --show
+    else
+        echo "no .versionrc"
+    fi
+    exit 0
+fi
 
 tmpfile=$(mktemp /tmp/versioner.XXXXXX)
 
 file=$1
 if [ -f $file ]
 then
-    python versioner.py $file ${@:2} > $tmpfile && mv $tmpfile $file
+    versioner.py $file ${@:2} > $tmpfile && mv $tmpfile $file
 fi
 rm -f $tmpfile
 

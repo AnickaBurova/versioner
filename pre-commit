@@ -16,13 +16,13 @@ do
         main=true
     fi
     # test if it is upgradable file
-    python versioner.py $file -s --maintenance 2>/dev/null 1>/dev/null
+    versioner.py $file -s --maintenance 2>/dev/null 1>/dev/null
     res=$?
     if [ "$res" == "0" ]
     then
         # now try to upgrade
-        text=$(python versioner.py $file -s --maintenance)
-        ./version_update $file --maintenance
+        text=$(versioner.py $file -s --maintenance)
+        versioner-update $file --maintenance
         git add $file
         echo "$file: $text"
     fi
@@ -32,7 +32,7 @@ if [ "$main" = false ]
 then
     if [ -f $MAIN_VERSION_FILE ]
     then
-        ./version_update $MAIN_VERSION_FILE --maintenance
+        versioner-update $MAIN_VERSION_FILE --maintenance
         git add $MAIN_VERSION_FILE
         echo "The main \"$MAIN_VERSION_FILE\" has been updated"
     fi
