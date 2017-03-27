@@ -8,7 +8,7 @@ import re
 
 
 usage = "usage: %prog [options] file"
-version = "0.1.1.0"
+version = "0.1.2.0"
 version_text = "%prog {}".format(version)
 opt = OptionParser(usage = usage, version = version_text)
 opt.add_option  ("-l","--language"
@@ -179,4 +179,5 @@ with open(options.file_path,"r") as f:
 text = text.replace(orig, updated)
 
 print (text)
+
 
