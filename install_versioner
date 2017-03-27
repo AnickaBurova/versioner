@@ -1,0 +1,29 @@
+#!/bin/bash
+
+if [ ! -d .git ]
+then
+    echo "cannot find .git folder, is this a git repository? exiting..."
+    exit 1
+fi
+
+echo "What is the main version file: "
+read main_file
+if [ ! -f $main_file ]
+then
+    echo "cannot find $main_file, exiting..."
+    exit 2
+fi
+
+echo '#!/bin/bash' > .versionrc
+echo "" > .versionrc
+echo "MAIN_VERSION_FILE=$main_file" > .versionrc
+
+versioner_dir="/home/milan/code/tools/versioner"
+
+ln -sf $versioner_dir/versioner.py versioner.py
+ln -sf $versioner_dir/version_update version_update
+
+ln -sf $versioner_dir/pre-commit .git/hooks/pre-commit
+
+echo Done
+

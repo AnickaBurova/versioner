@@ -6,7 +6,7 @@ import re
 
 
 usage = "usage: %prog [options] file"
-version = "0.1.0.0"
+version = "2.1.0"
 version_text = "%prog {}".format(version)
 opt = OptionParser(usage = usage, version = version_text)
 opt.add_option  ("-l","--language"
@@ -26,18 +26,10 @@ opt.add_option  ("","--minor"
                 ,action = "store_true"
                 ,dest = "minor", default = False
                 ,help = "upgrade minor version")
-opt.add_option  ("","--maintenance"
-                ,action = "store_true"
-                ,dest = "maintenance", default = False
-                ,help = "upgrade maintenance version")
 opt.add_option  ("","--build"
                 ,action = "store_true"
                 ,dest = "build", default = False
                 ,help = "upgrade build version")
-opt.add_option  ("-e","--no-error"
-                ,action = "store_true"
-                ,dest = "no_error", default = False
-                ,help = "no version is not considered as error")
 
 (options, args) = opt.parse_args()
 
@@ -71,18 +63,18 @@ class Language:
 try:
     options.file_path = args[0]
 except:
-    sys.stderr.write("No input file!\n")
+    sys.stderr.write("No input file!")
     exit(2)
 
 if not os.path.isfile(options.file_path):
-    sys.stderr.write("{} not exists!\n".format(options.file_path))
+    sys.stderr.write("{} not exists!".format(options.file_path))
     exit(3)
 
 
 if options.language:
     lan = Language.parse(options.language)
     if lan == Language.Unknown:
-        sys.stderr.write("Incorrect language, available languages: {}\n".format(Language.languages()))
+        sys.stderr.write("Incorrect language, available languages: {}".format(Language.languages()))
         exit(1)
     options.language = lan
 else:
@@ -96,23 +88,20 @@ else:
     options.language = exts.get(ext, Language.Unknown)
 
 if options.language == Language.Unknown:
-    if options.no_error:
-        print("Unknown language, cannot parse the file")
-        exit(0)
-    sys.stderr.write("Unknown language, cannot parse the file\n")
+    sys.stderr.write("Unknown language, cannot parse the file")
     exit(4)
 
 
 program_version_re = {
-    Language.Python     : re.compile("version\s*=\s*\"(\d+)\.(\d+)\.(\d+).(\d+)\""),
-    Language.Cpp        : re.compile("string\s+version\s*=\s*\"(\d+)\.(\d+)\.(\d+).(\d+)\""),
-    Language.Haskell    : re.compile("version\s*:\s*(\d+)\.(\d+)\.(\d+).(\d+)"),
+    Language.Python     : re.compile("version\s*=\s*\"(\d+)\.(\d+)\.(\d+)\""),
+    Language.Cpp        : re.compile("string\s+version\s*=\s*\"(\d+)\.(\d+)\.(\d+)\""),
+    Language.Haskell    : re.compile("version\s*:\s*(\d+)\.(\d+)\.(\d+)"),
 }
 
 program_version_update = {
-    Language.Python     : "version = \"{}.{}.{}.{}\"",
-    Language.Cpp        : "string version = \"{}.{}.{}.{}\"",
-    Language.Haskell    : "version:             {}.{}.{}.{}",
+    Language.Python     : "version = \"{}.{}.{}\"",
+    Language.Cpp        : "string version = \"{}.{}.{}\"",
+    Language.Haskell    : "version:             {}.{}.{}",
 }
 
 def get_version(options):
@@ -122,53 +111,33 @@ def get_version(options):
         for line in lines:
             m = program_re.match(line)
             if m:
-                return (m.group(0), int(m.group(1)),int(m.group(2)),int(m.group(3)),int(m.group(4)))
+                return (m.group(0), int(m.group(1)),int(m.group(2)),int(m.group(3)))
     return None
 
 
 
 current_version = get_version(options)
-old_version = current_version
-if not current_version:
-    if options.no_error:
-        exit(0)
-    else:
-        exit(10)
-upgraded = False
 
 if options.major:
-    t,m,_,_,_ = current_version
-    current_version = (t, m + 1, 0, 0, 0)
-    upgraded = True
+    t,m,_,_ = current_version
+    current_version = (t, m + 1, 0, 0)
 
 if options.minor:
-    t,m,n,_,_ = current_version
-    current_version = (t, m , n + 1, 0, 0)
-    upgraded = True
-
-if options.maintenance:
-    t,m,n,a,_ = current_version
-    current_version = (t, m , n, a + 1, 0)
-    upgraded = True
+    t,m,n,_ = current_version
+    current_version = (t, m , n + 1, 0)
 
 if options.build:
-    t,m,n,a,b = current_version
-    current_version = (t, m , n, a, b + 1)
-    upgraded = True
-
+    t,m,n,b = current_version
+    current_version = (t, m , n, b + 1)
 
 if options.show:
-    _,m,n,a,b = current_version
-    _,om,on,oa,ob = old_version
-    if upgraded:
-        print ("Version has been upgraded from '{}.{}.{}.{}' to '{}.{}.{}.{}'".format(om,on,oa,ob,m,n,a,b))
-    else:
-        print ("Version stays the same '{}.{}.{}.{}'".format(m,n,a,b))
+    print (current_version[0])
+    print ("{}.{}.{}".format(current_version[1],current_version[2],current_version[3]))
     exit(0)
 
-orig, major, minor, maintenance, build = current_version
+orig, major, minor, build = current_version
 
-updated = program_version_update[options.language].format(major, minor, maintenance, build)
+updated = program_version_update[options.language].format(major, minor, build)
 
 text = None
 with open(options.file_path,"r") as f:
@@ -177,3 +146,6 @@ with open(options.file_path,"r") as f:
 text = text.replace(orig, updated)
 
 print (text)
+
+
+
