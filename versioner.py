@@ -8,7 +8,7 @@ import re
 
 
 usage = "usage: %prog [options] file"
-version = "0.1.2.0"
+version = "0.1.4.0"
 version_text = "%prog {}".format(version)
 opt = OptionParser(usage = usage, version = version_text)
 opt.add_option  ("-l","--language"
@@ -44,7 +44,7 @@ opt.add_option  ("-e","--no-error"
 (options, args) = opt.parse_args()
 
 class Language:
-    Unknown, Python, Haskell, Cpp = range(0,4)
+    Unknown, Python, Haskell, Cpp, Rust = range(0,5)
 
     @staticmethod
     def languages():
@@ -61,6 +61,7 @@ class Language:
             "python" : Language.Python,
             "haskell" : Language.Haskell,
             "cpp"   : Language.Cpp,
+            "rust"  : Language.Rust,
         }
         if text in d:
             return d[text]
@@ -88,14 +89,17 @@ if options.language:
         exit(1)
     options.language = lan
 else:
-    _, ext = os.path.splitext(options.file_path)
-    exts = {
-        ".py" : Language.Python,
-        ".cabal" : Language.Haskell,
-        ".hpp" : Language.Cpp,
-        ".cpp" : Language.Cpp,
-    }
-    options.language = exts.get(ext, Language.Unknown)
+    if options.file_path == "Cargo.toml":
+        options.language = Language.Rust
+    else:
+        _, ext = os.path.splitext(options.file_path)
+        exts = {
+            ".py" : Language.Python,
+            ".cabal" : Language.Haskell,
+            ".hpp" : Language.Cpp,
+            ".cpp" : Language.Cpp,
+        }
+        options.language = exts.get(ext, Language.Unknown)
 
 if options.language == Language.Unknown:
     if options.no_error:
@@ -109,12 +113,14 @@ program_version_re = {
     Language.Python     : re.compile("version\s*=\s*\"(\d+)\.(\d+)\.(\d+).(\d+)\""),
     Language.Cpp        : re.compile("string\s+version\s*=\s*\"(\d+)\.(\d+)\.(\d+).(\d+)\""),
     Language.Haskell    : re.compile("version\s*:\s*(\d+)\.(\d+)\.(\d+).(\d+)"),
+    Language.Rust       : re.compile("version\s*=\s*\"(\d+)\.(\d+)\.(\d+)\""),
 }
 
 program_version_update = {
     Language.Python     : "version = \"{}.{}.{}.{}\"",
     Language.Cpp        : "string version = \"{}.{}.{}.{}\"",
     Language.Haskell    : "version:             {}.{}.{}.{}",
+    Language.Rust       : "version = \"{}.{}.{}\"",
 }
 
 def get_version(options):
@@ -123,8 +129,10 @@ def get_version(options):
         lines = f.readlines()
         for line in lines:
             m = program_re.match(line)
-            if m:
+            if m and m.groups == 4:
                 return (m.group(0), int(m.group(1)),int(m.group(2)),int(m.group(3)),int(m.group(4)))
+            elif m:
+                return (m.group(0), int(m.group(1)),int(m.group(2)),int(m.group(3)),0)
     return None
 
 
@@ -179,5 +187,7 @@ with open(options.file_path,"r") as f:
 text = text.replace(orig, updated)
 
 print (text)
+
+
 
 
