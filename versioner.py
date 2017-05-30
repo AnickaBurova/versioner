@@ -8,7 +8,7 @@ import re
 
 
 usage = "usage: %prog [options] file"
-version = "0.1.4.0"
+version = "0.1.6.0"
 version_text = "%prog {}".format(version)
 opt = OptionParser(usage = usage, version = version_text)
 opt.add_option  ("-l","--language"
@@ -40,6 +40,10 @@ opt.add_option  ("-e","--no-error"
                 ,action = "store_true"
                 ,dest = "no_error", default = False
                 ,help = "no version is not considered as error")
+opt.add_option  ("-v","--version-only"
+                ,action = "store_true"
+                ,dest = "version_only", default = False
+                ,help = "if showing, show only the current version")
 
 (options, args) = opt.parse_args()
 
@@ -74,8 +78,17 @@ class Language:
 try:
     options.file_path = args[0]
 except:
-    sys.stderr.write("No input file!\n")
-    exit(2)
+    # try .versionrc file
+    try:
+        with open(".versionrc", "r") as f:
+            m = re.compile("MAIN_VERSION_FILE=(.*)").match(f.read())
+            if m:
+                options.file_path = m.group(1)
+            else:
+                raise "no file path"
+    except:
+        sys.stderr.write("No input file!\n")
+        exit(2)
 
 if not os.path.isfile(options.file_path):
     sys.stderr.write("{} not exists!\n".format(options.file_path))
@@ -170,10 +183,13 @@ if options.build:
 if options.show:
     _,m,n,a,b = current_version
     _,om,on,oa,ob = old_version
-    if upgraded:
-        print ("Version has been upgraded from '{}.{}.{}.{}' to '{}.{}.{}.{}'".format(om,on,oa,ob,m,n,a,b))
+    if options.version_only:
+        print("{}.{}.{}.{}".format(m,n,a,b))
     else:
-        print ("Current version is '{}.{}.{}.{}'".format(m,n,a,b))
+        if upgraded:
+            print ("Version has been upgraded from '{}.{}.{}.{}' to '{}.{}.{}.{}'".format(om,on,oa,ob,m,n,a,b))
+        else:
+            print ("Current version is '{}.{}.{}.{}'".format(m,n,a,b))
     exit(0)
 
 orig, major, minor, maintenance, build = current_version
@@ -187,6 +203,8 @@ with open(options.file_path,"r") as f:
 text = text.replace(orig, updated)
 
 print (text)
+
+
 
 
 
