@@ -8,7 +8,7 @@ import re
 
 
 usage = "usage: %prog [options] file"
-version = "0.1.6.0"
+version = "0.1.8.0"
 version_text = "%prog {}".format(version)
 opt = OptionParser(usage = usage, version = version_text)
 opt.add_option  ("-l","--language"
@@ -82,6 +82,7 @@ except:
     try:
         with open(".versionrc", "r") as f:
             m = re.compile("MAIN_VERSION_FILE=(.*)").match(f.read())
+
             if m:
                 options.file_path = m.group(1)
             else:
@@ -203,6 +204,8 @@ with open(options.file_path,"r") as f:
 text = text.replace(orig, updated)
 
 print (text)
+
+
 
 
 
