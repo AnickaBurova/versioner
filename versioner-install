@@ -5,6 +5,7 @@ then
     echo "uninstalling versioner files, manually remove pre-commit from affected git repositories"
     rm -v /usr/local/bin/versioner-install
     rm -v /usr/local/bin/versioner-pre-commit
+    rm -v /usr/local/bin/versioner-commit-msg
     rm -v /usr/local/bin/versioner.py
     rm -v /usr/local/bin/versioner-update
     exit 0
@@ -16,6 +17,7 @@ then
 
     install -v versioner-install /usr/local/bin
     install -v pre-commit /usr/local/bin/versioner-pre-commit
+    install -v commit-msg /usr/local/bin/versioner-commit-msg
     install -v versioner.py /usr/local/bin
     install -v versioner-update /usr/local/bin
 
@@ -46,7 +48,11 @@ versioner_dir="$(dirname $0)"
 #ln -sf $versioner_dir/version_update version_update
 
 ln -sf $versioner_dir/versioner-pre-commit .git/hooks/pre-commit
-echo ".versionrc" >> .gitignore
+ln -sf $versioner_dir/versioner-commit-msg .git/hooks/commit-msg
+if ! grep ".versionrc" .gitignore 1>/dev/null
+then
+    echo ".versionrc" >> .gitignore
+fi
 
 echo Done
 
