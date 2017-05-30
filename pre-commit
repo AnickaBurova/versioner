@@ -11,9 +11,8 @@ main=false
 
 for file in $files
 do
-    if [ "$MAIN_VERSION_FILE" = "$FILE" ]
+    if [ "$MAIN_VERSION_FILE" = "$file" ]
     then
-        echo "this is main file"
         main=true
     fi
     # test if it is upgradable file
@@ -31,7 +30,6 @@ done
 
 if [ "$main" = false ]
 then
-    echo "the second time main file"
     if [ -f $MAIN_VERSION_FILE ]
     then
         versioner-update $MAIN_VERSION_FILE --maintenance
