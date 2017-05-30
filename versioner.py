@@ -82,7 +82,6 @@ except:
     try:
         with open(".versionrc", "r") as f:
             m = re.compile("MAIN_VERSION_FILE=(.*)").match(f.read())
-
             if m:
                 options.file_path = m.group(1)
             else:
