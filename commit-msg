@@ -1,0 +1,5 @@
+#!/bin/sh
+
+orig_msg=$(cat $1)
+version=$(versioner.py -s -v)
+echo "$version: $orig_msg" > $1
