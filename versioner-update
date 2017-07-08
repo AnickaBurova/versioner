@@ -1,24 +1,30 @@
 #!/bin/bash
+# File: versioner-update
+# Author: Anicka Burova <anicka.burova@gmail.com>
+# Date: 07.07.2017
+# Last Modified Date: 08.07.2017
+# Last Modified By: Anicka Burova <anicka.burova@gmail.com>
+#!/bin/bash
 
+if [ -f ".versionrc" ]
+then
+    source .versionrc
+else
+    echo "no .versionrc"
+    exit 1
+fi
 
 if [ $# -eq 0 ]
 then
-    if [ -f ".versionrc" ]
-    then
-        source .versionrc
-        versioner.py $MAIN_VERSION_FILE --show
-    else
-        echo "no .versionrc"
-    fi
+    versioner.py $MAIN_VERSION_FILE --show
     exit 0
 fi
 
 tmpfile=$(mktemp /tmp/versioner.XXXXXX)
 
-file=$1
-if [ -f $file ]
+if [ -f $MAIN_VERSION_FILE ]
 then
-    versioner.py $file ${@:2} > $tmpfile && mv $tmpfile $file
+    versioner.py $MAIN_VERSION_FILE $* > $tmpfile && mv $tmpfile $MAIN_VERSION_FILE
 fi
 rm -f $tmpfile
 
