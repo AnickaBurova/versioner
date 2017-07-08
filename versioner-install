@@ -1,30 +1,10 @@
 #!/bin/bash
 # File: versioner-install
 # Author: Anicka Burova <anicka.burova@gmail.com>
-# Date: 07.07.2017
-# Last Modified Date: 07.07.2017
+# Date: 08.07.2017
+# Last Modified Date: 08.07.2017
 # Last Modified By: Anicka Burova <anicka.burova@gmail.com>
 #!/bin/bash
-# versioner-install
-# Copyright (c) 2017 Anicka Burova <anicka.burova@gmail.com>
-# 
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
 
 if [ "$1" == "uninstall" ]
 then
@@ -34,7 +14,6 @@ then
     rm -v /usr/local/bin/versioner-commit-msg
     rm -v /usr/local/bin/versioner.py
     rm -v /usr/local/bin/versioner-update
-    rm -v /usr/local/bin/versioner-uninstall-hooks
     exit 0
 fi
 
@@ -43,9 +22,10 @@ then
     echo "running app install..."
 
     install -v versioner-install /usr/local/bin
+    install -v pre-commit /usr/local/bin/versioner-pre-commit
+    install -v commit-msg /usr/local/bin/versioner-commit-msg
     install -v versioner.py /usr/local/bin
     install -v versioner-update /usr/local/bin
-    install -v versioner-uninstall-hooks /usr/local/bin
 
     echo "installed"
     exit 0
@@ -66,12 +46,26 @@ then
     exit 2
 fi
 
-echo "MAIN_VERSION_FILE=$main_file" > .versionrc
+echo "Automatic versioning using hook or manual? [a/m]"
+read version_mode
+if [ "$version_mode" == "a" ]
+then
+    echo "VERSION_MODE=auto" > .versionrc
+elif [ "$version_mode" == "m" ]
+then
+    echo "VERSION_MODE=manual" > .versionrc
+else
+    echo "Choose a or m"
+    exit 2
+fi
+
+echo "MAIN_VERSION_FILE=$main_file" >> .versionrc
 
 versioner_dir="$(dirname $0)"
 
 
-versioner-uninstall-hooks
+ln -sf $versioner_dir/versioner-pre-commit .git/hooks/pre-commit
+ln -sf $versioner_dir/versioner-commit-msg .git/hooks/commit-msg
 if ! grep ".versionrc" .gitignore 1>/dev/null
 then
     echo ".versionrc" >> .gitignore
