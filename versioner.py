@@ -44,7 +44,7 @@ import re
 
 
 usage = "usage: %prog [options] file"
-version = "0.1.20.0"
+version = "0.2.0.0"
 version_text = "%prog {}".format(version)
 opt = OptionParser(usage = usage, version = version_text)
 opt.add_option  ("-l","--language"
@@ -236,5 +236,10 @@ with open(options.file_path,"r") as f:
     text = f.read()
 
 text = text.replace(orig, updated)
+
+if upgraded:
+    _,m,n,a,b = current_version
+    _,om,on,oa,ob = old_version
+    sys.stderr.write("Version has been upgraded from '{}.{}.{}.{}' to '{}.{}.{}.{}'\n".format(om,on,oa,ob,m,n,a,b))
 
 sys.stdout.write(text)
