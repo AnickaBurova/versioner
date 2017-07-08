@@ -44,7 +44,7 @@ import re
 
 
 usage = "usage: %prog [options] file"
-version = "0.2.0.0"
+version = "0.2.1.0"
 version_text = "%prog {}".format(version)
 opt = OptionParser(usage = usage, version = version_text)
 opt.add_option  ("-l","--language"
