@@ -33,5 +33,5 @@ fi
 
 
 orig_msg=$(cat $1)
-version=$(versioner.py -s -v)
+version=$(versioner.py $MAIN_VERSION_FILE -s -v)
 echo "$version: $orig_msg" > $1

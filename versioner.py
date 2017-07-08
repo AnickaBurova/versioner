@@ -219,12 +219,12 @@ if options.show:
     _,m,n,a,b = current_version
     _,om,on,oa,ob = old_version
     if options.version_only:
-        sys.stderr.write("{}.{}.{}.{}\n".format(m,n,a,b))
+        sys.stdout.write("{}.{}.{}.{}\n".format(m,n,a,b))
     else:
         if upgraded:
-            sys.stderr.write("Version has been upgraded from '{}.{}.{}.{}' to '{}.{}.{}.{}'\n".format(om,on,oa,ob,m,n,a,b))
+            sys.stdout.write("Version has been upgraded from '{}.{}.{}.{}' to '{}.{}.{}.{}'\n".format(om,on,oa,ob,m,n,a,b))
         else:
-            sys.stderr.write("Current version is '{}.{}.{}.{}'\n".format(m,n,a,b))
+            sys.stdout.write("Current version is '{}.{}.{}.{}'\n".format(m,n,a,b))
     exit(0)
 
 orig, major, minor, maintenance, build = current_version
