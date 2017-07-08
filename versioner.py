@@ -1,3 +1,39 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# File: versioner.py
+# Author: Anicka Burova <anicka.burova@gmail.com>
+# Date: 07.07.2017
+# Last Modified Date: 08.07.2017
+# Last Modified By: Anicka Burova <anicka.burova@gmail.com>
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# versioner.py
+# Copyright (c) 2017 Anicka Burova <anicka.burova@gmail.com>
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# File: versioner.py
+# Author: Anicka Burova <anicka.burova@gmail.com>
+# Date: 07.07.2017
+# Last Modified Date: 07.07.2017
+# Last Modified By: Anicka Burova <anicka.burova@gmail.com>
 #!/bin/env python
 
 import sys
@@ -28,7 +64,7 @@ opt.add_option  ("","--minor"
                 ,action = "store_true"
                 ,dest = "minor", default = False
                 ,help = "upgrade minor version")
-opt.add_option  ("","--maintenance"
+opt.add_option  ("","--maintenance","--main"
                 ,action = "store_true"
                 ,dest = "maintenance", default = False
                 ,help = "upgrade maintenance version")
@@ -115,10 +151,9 @@ else:
         options.language = exts.get(ext, Language.Unknown)
 
 if options.language == Language.Unknown:
-    if options.no_error:
-        print("Unknown language, cannot parse the file")
-        exit(0)
     sys.stderr.write("Unknown language, cannot parse the file\n")
+    if options.no_error:
+        exit(0)
     exit(4)
 
 
@@ -184,12 +219,12 @@ if options.show:
     _,m,n,a,b = current_version
     _,om,on,oa,ob = old_version
     if options.version_only:
-        print("{}.{}.{}.{}".format(m,n,a,b))
+        sys.stderr.write("{}.{}.{}.{}\n".format(m,n,a,b))
     else:
         if upgraded:
-            print ("Version has been upgraded from '{}.{}.{}.{}' to '{}.{}.{}.{}'".format(om,on,oa,ob,m,n,a,b))
+            sys.stderr.write("Version has been upgraded from '{}.{}.{}.{}' to '{}.{}.{}.{}'\n".format(om,on,oa,ob,m,n,a,b))
         else:
-            print ("Current version is '{}.{}.{}.{}'".format(m,n,a,b))
+            sys.stderr.write("Current version is '{}.{}.{}.{}'\n".format(m,n,a,b))
     exit(0)
 
 orig, major, minor, maintenance, build = current_version
@@ -202,12 +237,4 @@ with open(options.file_path,"r") as f:
 
 text = text.replace(orig, updated)
 
-print (text)
-
-
-
-
-
-
-
-
+sys.stdout.write(text)
