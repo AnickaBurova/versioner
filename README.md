@@ -1,23 +1,38 @@
-# Simple automatic versioning hooked to pre-commit in git
+Versioner
+=========
+Automatic or manual versioning with git hooks.
 
-This will automatically control the version of a project, by incrementing maintanence version with each commit.  
+Install
+-------
+Clone and run
+```sh
+sudo ./versioner-install
+```
 
-The script expects a "main file" to contain version. This text is searched and automatically incremented.  
-Manually can be used to increment major and minor version.  
+to install versioner on your system.
 
-TODO: added automatic increment for build version in jenkins.  
+To install for specific git repo run
+```sh
+versioner-install
+```
+And follow questions. Set the file where the version is stored and what versioning you want [manual, automatic].
+Automatic for now automatically upgrades maintanence part of version (the third number 1.2.3.4).
 
-Usage:      
-   Clone this repo and run as sudo ./versioner-install  
-   This will copy required files to /usr/local/bin.  
+Usage
+-----
+I personally preffer to create an alias for script versioner-update (in my case simply vu).
+* To get the current version
+```sh
+versioner-update
+```
+* Upgrade major (minor, maintanence, build) version
+```sh
+versioner-update --major
+versioner-update --minor
+versioner-update --main
+versioner-update --build
+```
 
-   For each project you want to control the version, run versioner-install from it's directory. That will copy pre-commit script to .git/hooks.  
-   ## !! There is no check if pre-commit already exists !!  
-
-   For manual increment run version-update 'file' with --major --minor --maintanence or --build.  
-
-
-This can automatically control python, c++ and haskell projects.  
-For python, it will search for text: version = "x.y.z.a".  
-For c++: string version = "x.y.z.a".  
-For haskell it expects cabal file and text: version: x.y.z.a.  
+If automatic is picked, then maintanence version is always upgraded before commit.
+For manual, you have to manually upgrade.
+Version number will be prefixed to each commit message, and on each upgrade a new tag with summary since last version is created.
