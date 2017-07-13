@@ -31,7 +31,7 @@ then
     source .versionrc
 fi
 
-has_msg=$(versioner-has-msg.py < $1)
+has_msg=$(versioner-has-msg.py < $1 && echo msg)
 
 if [ "$has_msg" == "msg" ]
 then
