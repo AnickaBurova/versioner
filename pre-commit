@@ -2,7 +2,7 @@
 # File: pre-commit
 # Author: Anicka Burova <anicka.burova@gmail.com>
 # Date: 08.07.2017
-# Last Modified Date: 08.07.2017
+# Last Modified Date: 13.07.2017
 # Last Modified By: Anicka Burova <anicka.burova@gmail.com>
 # pre-commit
 # Copyright (c) 2017 Anicka Burova <anicka.burova@gmail.com>
@@ -30,42 +30,57 @@ then
     source .versionrc
 fi
 
+
+
 # exit if the versioning mode is not auto
-if [ "$VERSION_MODE" != "auto" ]
+if [ "$VERSION_MODE" == "auto" ]
 then
-    exit 0
+    files=$(git diff --name-only --cached)
+
+    main=false
+
+    for file in $files
+    do
+        if [ "$MAIN_VERSION_FILE" = "$file" ]
+        then
+            main=true
+        fi
+        # test if it is upgradable file
+        versioner.py $file -s --maintenance 2>/dev/null 1>/dev/null
+        res=$?
+        if [ "$res" == "0" ]
+        then
+            # now try to upgrade
+            text=$(versioner.py $file -s --maintenance)
+            versioner-update $file --maintenance
+            git add $file
+            echo "$file: $text"
+        fi
+    done
+
+    if [ "$main" = false ]
+    then
+        if [ -f $MAIN_VERSION_FILE ]
+        then
+            versioner-update $MAIN_VERSION_FILE --maintenance
+            git add $MAIN_VERSION_FILE
+            echo "The main \"$MAIN_VERSION_FILE\" has been updated"
+        fi
+    fi
 fi
 
-files=$(git diff --name-only --cached)
-
-main=false
-
-for file in $files
-do
-    if [ "$MAIN_VERSION_FILE" = "$file" ]
-    then
-        main=true
-    fi
-    # test if it is upgradable file
-    versioner.py $file -s --maintenance 2>/dev/null 1>/dev/null
-    res=$?
-    if [ "$res" == "0" ]
-    then
-        # now try to upgrade
-        text=$(versioner.py $file -s --maintenance)
-        versioner-update $file --maintenance
-        git add $file
-        echo "$file: $text"
-    fi
-done
-
-if [ "$main" = false ]
+if [ -f ".version_upgrade" ]
 then
-    if [ -f $MAIN_VERSION_FILE ]
-    then
-        versioner-update $MAIN_VERSION_FILE --maintenance
-        git add $MAIN_VERSION_FILE
-        echo "The main \"$MAIN_VERSION_FILE\" has been updated"
-    fi
+    source ".version_upgrade"
+    prefix="$OLD_VERSION: "
+    echo "Version $OLD_VERSION" > .version_tag_msg
+    echo "" >> .version_tag_msg
+    git --no-pager log | grep $OLD_VERSION | while read line
+    do
+        line=${line#$prefix}
+        echo $line >> .version_tag_msg
+    done
+
+    git tag -a v$OLD_VERSION -F .version_tag_msg && rm -f .version_tag_msg && rm -f .version_upgrade
 fi
 
