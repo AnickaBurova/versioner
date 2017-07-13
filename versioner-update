@@ -2,9 +2,8 @@
 # File: versioner-update
 # Author: Anicka Burova <anicka.burova@gmail.com>
 # Date: 07.07.2017
-# Last Modified Date: 08.07.2017
+# Last Modified Date: 14.07.2017
 # Last Modified By: Anicka Burova <anicka.burova@gmail.com>
-#!/bin/bash
 
 if [ -f ".versionrc" ]
 then
@@ -20,12 +19,13 @@ then
     exit 0
 fi
 
-tmpfile=$(mktemp /tmp/versioner.XXXXXX)
-
-if [ -f $MAIN_VERSION_FILE ]
+if [[ "$1" == "--major" || "$1" == "--minor" || "$1" == "--main" || "$1" == "--build" ]]
 then
-    versioner.py $MAIN_VERSION_FILE $* > $tmpfile && mv $tmpfile $MAIN_VERSION_FILE
+    tmpfile=$(mktemp /tmp/versioner.XXXXXX)
+
+    if [ -f $MAIN_VERSION_FILE ]
+    then
+        versioner.py $MAIN_VERSION_FILE $* > $tmpfile && mv $tmpfile $MAIN_VERSION_FILE
+    fi
+    rm -f $tmpfile
 fi
-rm -f $tmpfile
-
-
