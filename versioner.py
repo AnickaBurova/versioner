@@ -230,6 +230,10 @@ text = text.replace(orig, updated)
 if upgraded:
     _,m,n,a,b = current_version
     _,om,on,oa,ob = old_version
+    with open(".version_upgrade", "w") as f:
+        f.write("OLD_VERSION={}.{}.{}.{}\n".format(om,on,oa,ob))
+        f.write("NEW_VERSION={}.{}.{}.{}\n".format(m,n,a,b))
+
     sys.stderr.write("Version has been upgraded from '{}.{}.{}.{}' to '{}.{}.{}.{}'\n".format(om,on,oa,ob,m,n,a,b))
 
 sys.stdout.write(text)

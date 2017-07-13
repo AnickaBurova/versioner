@@ -93,6 +93,10 @@ ln -sf $versioner_dir/versioner-post-commit .git/hooks/post-commit
 if ! grep ".versionrc" .gitignore 1>/dev/null
 then
     echo ".versionrc" >> .gitignore
+fi
+
+if ! grep ".version_upgrade" .gitignore 1>/dev/null
+then
     echo ".version_upgrade" >> .gitignore
 fi
 

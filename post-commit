@@ -5,4 +5,9 @@
 # Last Modified Date: 13.07.2017
 # Last Modified By: Anicka Burova <anicka.burova@gmail.com>
 
-git log -1 HEAD
+if [ -f ".version_upgrade" ]
+then
+    source ".version_upgrade"
+    git --no-pager log | grep $OLD_VERSION
+fi
+
