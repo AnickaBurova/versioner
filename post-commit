@@ -2,21 +2,5 @@
 # File: post-commit
 # Author: Anicka Burova <anicka.burova@gmail.com>
 # Date: 13.07.2017
-# Last Modified Date: 13.07.2017
+# Last Modified Date: 14.07.2017
 # Last Modified By: Anicka Burova <anicka.burova@gmail.com>
-
-if [ -f ".version_upgrade" ]
-then
-    source ".version_upgrade"
-    prefix="$OLD_VERSION: "
-    echo "Version $OLD_VERSION" > .version_tag_msg
-    echo "" >> .version_tag_msg
-    git --no-pager log | grep $OLD_VERSION | while read line
-    do
-        line=${line#$prefix}
-        echo $line >> .version_tag_msg
-    done
-
-    git tag -a v$OLD_VERSION -F .version_tag_msg && rm -f .version_tag_msg && rm -f .version_upgrade
-fi
-
