@@ -2,11 +2,10 @@
 # -*- coding: utf-8 -*-
 # File: versioner.py
 # Author: Anicka Burova <anicka.burova@gmail.com>
-# Date: 07.07.2017
-# Last Modified Date: 08.07.2017
+# Date: 13.07.2017
+# Last Modified Date: 13.07.2017
 # Last Modified By: Anicka Burova <anicka.burova@gmail.com>
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+#
 # versioner.py
 # Copyright (c) 2017 Anicka Burova <anicka.burova@gmail.com>
 #
@@ -27,15 +26,6 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-# File: versioner.py
-# Author: Anicka Burova <anicka.burova@gmail.com>
-# Date: 07.07.2017
-# Last Modified Date: 07.07.2017
-# Last Modified By: Anicka Burova <anicka.burova@gmail.com>
-#!/bin/env python
-
 import sys
 from optparse import OptionParser
 import os

@@ -1,11 +1,11 @@
-#!/bin/bash
-# File: commit-msg
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# File: versioner-has-msg.py
 # Author: Anicka Burova <anicka.burova@gmail.com>
-# Date: 08.07.2017
+# Date: 13.07.2017
 # Last Modified Date: 13.07.2017
 # Last Modified By: Anicka Burova <anicka.burova@gmail.com>
-#!/bin/bash
-# commit-msg
+#
 # Copyright (c) 2017 Anicka Burova <anicka.burova@gmail.com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,16 +26,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-if [ -f .versionrc ]
-then
-    source .versionrc
-fi
+import sys
 
-has_msg=$(versioner-has-msg.py < $1)
+has_msg = False
 
-if [ "$has_msg" == "msg" ]
-then
-    version=$(versioner.py $MAIN_VERSION_FILE -s -v)
-    orig_msg=$(<$1)
-    echo "$version: $orig_msg" > $1
-fi
+for line in sys.stdin.readlines():
+    line = line.strip()
+    if len(line) > 0 and line[0] != "#":
+        has_msg = True
+        break
+
+exit(0 if has_msg else 1)
