@@ -1,0 +1,8 @@
+#!/bin/bash
+# File: post-commit
+# Author: Anicka Burova <anicka.burova@gmail.com>
+# Date: 13.07.2017
+# Last Modified Date: 13.07.2017
+# Last Modified By: Anicka Burova <anicka.burova@gmail.com>
+
+git log -1 HEAD
