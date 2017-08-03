@@ -3,7 +3,7 @@
 # File: versioner.py
 # Author: Anicka Burova <anicka.burova@gmail.com>
 # Date: 13.07.2017
-# Last Modified Date: 13.07.2017
+# Last Modified Date: 03.08.2017
 # Last Modified By: Anicka Burova <anicka.burova@gmail.com>
 #
 # versioner.py
@@ -34,7 +34,7 @@ import re
 
 
 usage = "usage: %prog [options] file"
-version = "0.3.2.0"
+version = "0.3.3.0"
 version_text = "%prog {}".format(version)
 opt = OptionParser(usage = usage, version = version_text)
 opt.add_option  ("-l","--language"
@@ -167,7 +167,7 @@ def get_version(options):
         lines = f.readlines()
         for line in lines:
             m = program_re.match(line)
-            if m and m.groups == 4:
+            if m and len(m.groups()) == 4:
                 return (m.group(0), int(m.group(1)),int(m.group(2)),int(m.group(3)),int(m.group(4)))
             elif m:
                 return (m.group(0), int(m.group(1)),int(m.group(2)),int(m.group(3)),0)
