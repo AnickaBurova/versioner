@@ -34,7 +34,7 @@ import re
 
 
 usage = "usage: %prog [options] file"
-version = "0.3.3.0"
+version = "0.3.4.0"
 version_text = "%prog {}".format(version)
 opt = OptionParser(usage = usage, version = version_text)
 opt.add_option  ("-l","--language"
@@ -74,7 +74,7 @@ opt.add_option  ("-v","--version-only"
 (options, args) = opt.parse_args()
 
 class Language:
-    Unknown, Python, Haskell, Cpp, Rust = range(0,5)
+    Unknown, Python, Haskell, Cpp, Rust, Godot = range(0,6)
 
     @staticmethod
     def languages():
@@ -92,6 +92,7 @@ class Language:
             "haskell" : Language.Haskell,
             "cpp"   : Language.Cpp,
             "rust"  : Language.Rust,
+            "godot" : Language.Godot,
         }
         if text in d:
             return d[text]
@@ -130,6 +131,8 @@ if options.language:
 else:
     if options.file_path == "Cargo.toml":
         options.language = Language.Rust
+    elif options.file_path == "engine.cfg":
+        options.language = Language.Godot
     else:
         _, ext = os.path.splitext(options.file_path)
         exts = {
@@ -149,6 +152,7 @@ if options.language == Language.Unknown:
 
 program_version_re = {
     Language.Python     : re.compile("version\s*=\s*\"(\d+)\.(\d+)\.(\d+).(\d+)\""),
+    Language.Godot      : re.compile("version\s*=\s*\"(\d+)\.(\d+)\.(\d+).(\d+)\""),
     Language.Cpp        : re.compile("string\s+version\s*=\s*\"(\d+)\.(\d+)\.(\d+).(\d+)\""),
     Language.Haskell    : re.compile("version\s*:\s*(\d+)\.(\d+)\.(\d+).(\d+)"),
     Language.Rust       : re.compile("version\s*=\s*\"(\d+)\.(\d+)\.(\d+)\""),
@@ -156,6 +160,7 @@ program_version_re = {
 
 program_version_update = {
     Language.Python     : "version = \"{}.{}.{}.{}\"",
+    Language.Godot      : "version=\"{}.{}.{}.{}\"",
     Language.Cpp        : "string version = \"{}.{}.{}.{}\"",
     Language.Haskell    : "version:             {}.{}.{}.{}",
     Language.Rust       : "version = \"{}.{}.{}\"",

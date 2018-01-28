@@ -2,6 +2,10 @@ Versioner
 =========
 Automatic or manual versioning with git hooks.
 
+It is trying to work with python, rust, haskell, godot and c++.
+It simply searches in specific files for variables called version.
+For rust it is using only Major.Minor.Build versioning. All other supported languages has maintanence number as well.
+
 Install
 -------
 Clone and run
