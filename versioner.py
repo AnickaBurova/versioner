@@ -34,7 +34,7 @@ import re
 
 
 usage = "usage: %prog [options] file"
-version = "0.3.4.0"
+version = "0.3.5.0"
 version_text = "%prog {}".format(version)
 opt = OptionParser(usage = usage, version = version_text)
 opt.add_option  ("-l","--language"
@@ -74,7 +74,7 @@ opt.add_option  ("-v","--version-only"
 (options, args) = opt.parse_args()
 
 class Language:
-    Unknown, Python, Haskell, Cpp, Rust, Godot = range(0,6)
+    Unknown, Python, Haskell, Cpp, Rust, Godot, Godot3 = range(0,7)
 
     @staticmethod
     def languages():
@@ -93,6 +93,7 @@ class Language:
             "cpp"   : Language.Cpp,
             "rust"  : Language.Rust,
             "godot" : Language.Godot,
+            "godot3" : Language.Godot3,
         }
         if text in d:
             return d[text]
@@ -133,6 +134,8 @@ else:
         options.language = Language.Rust
     elif options.file_path == "engine.cfg":
         options.language = Language.Godot
+    elif options.file_path == "project.godot":
+        options.language = Language.Godot3
     else:
         _, ext = os.path.splitext(options.file_path)
         exts = {
@@ -153,6 +156,7 @@ if options.language == Language.Unknown:
 program_version_re = {
     Language.Python     : re.compile("version\s*=\s*\"(\d+)\.(\d+)\.(\d+).(\d+)\""),
     Language.Godot      : re.compile("version\s*=\s*\"(\d+)\.(\d+)\.(\d+).(\d+)\""),
+    Language.Godot3     : re.compile("config/Version\s*=\s*\"(\d+)\.(\d+)\.(\d+).(\d+)\""),
     Language.Cpp        : re.compile("string\s+version\s*=\s*\"(\d+)\.(\d+)\.(\d+).(\d+)\""),
     Language.Haskell    : re.compile("version\s*:\s*(\d+)\.(\d+)\.(\d+).(\d+)"),
     Language.Rust       : re.compile("version\s*=\s*\"(\d+)\.(\d+)\.(\d+)\""),
@@ -160,7 +164,7 @@ program_version_re = {
 
 program_version_update = {
     Language.Python     : "version = \"{}.{}.{}.{}\"",
-    Language.Godot      : "version=\"{}.{}.{}.{}\"",
+    Language.Godot      : "config/Version=\"{}.{}.{}.{}\"",
     Language.Cpp        : "string version = \"{}.{}.{}.{}\"",
     Language.Haskell    : "version:             {}.{}.{}.{}",
     Language.Rust       : "version = \"{}.{}.{}\"",
