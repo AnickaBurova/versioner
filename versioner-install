@@ -90,6 +90,7 @@ versioner_dir="$(dirname $0)"
 ln -sf $versioner_dir/versioner-pre-commit .git/hooks/pre-commit
 ln -sf $versioner_dir/versioner-commit-msg .git/hooks/commit-msg
 ln -sf $versioner_dir/versioner-post-commit .git/hooks/post-commit
+touch .gitignore
 if ! grep ".versionrc" .gitignore 1>/dev/null
 then
     echo ".versionrc" >> .gitignore
