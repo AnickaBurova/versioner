@@ -132,6 +132,8 @@ if options.language:
 else:
     if options.file_path == "Cargo.toml":
         options.language = Language.Rust
+    if options.file_path == "package.yaml":
+        options.language = Language.Haskell
     elif options.file_path == "engine.cfg":
         options.language = Language.Godot
     elif options.file_path == "project.godot":
