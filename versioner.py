@@ -34,7 +34,7 @@ import re
 
 
 usage = "usage: %prog [options] file"
-version = "0.3.5.0"
+version = "0.3.6.0"
 version_text = "%prog {}".format(version)
 opt = OptionParser(usage = usage, version = version_text)
 opt.add_option  ("-l","--language"
@@ -132,7 +132,7 @@ if options.language:
 else:
     if options.file_path == "Cargo.toml":
         options.language = Language.Rust
-    if options.file_path == "package.yaml":
+    elif options.file_path == "package.yaml":
         options.language = Language.Haskell
     elif options.file_path == "engine.cfg":
         options.language = Language.Godot
