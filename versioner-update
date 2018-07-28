@@ -13,9 +13,15 @@ else
     exit 1
 fi
 
+lang=""
+if [ "$VERSION_LANG" != "" ]
+then
+    lang="-l $VERSION_LANG"
+fi
+
 if [ $# -eq 0 ]
 then
-    versioner.py $MAIN_VERSION_FILE --show
+    versioner.py $MAIN_VERSION_FILE $lang --show
     exit 0
 fi
 
@@ -25,7 +31,7 @@ then
 
     if [ -f $MAIN_VERSION_FILE ]
     then
-        versioner.py $MAIN_VERSION_FILE $* > $tmpfile && mv $tmpfile $MAIN_VERSION_FILE
+        versioner.py $MAIN_VERSION_FILE $lang $* > $tmpfile && mv $tmpfile $MAIN_VERSION_FILE
     fi
     rm -f $tmpfile
 fi

@@ -74,7 +74,7 @@ opt.add_option  ("-v","--version-only"
 (options, args) = opt.parse_args()
 
 class Language:
-    Unknown, Python, Haskell, Cpp, Rust, Godot, Godot3 = range(0,7)
+    Unknown, Python, PythonSetup, Haskell, Cpp, Rust, Godot, Godot3 = range(0,8)
 
     @staticmethod
     def languages():
@@ -89,6 +89,7 @@ class Language:
         text = text.lower()
         d = {
             "python" : Language.Python,
+            "pythonsetup" : Language.PythonSetup,
             "haskell" : Language.Haskell,
             "cpp"   : Language.Cpp,
             "rust"  : Language.Rust,
@@ -138,6 +139,8 @@ else:
         options.language = Language.Godot
     elif options.file_path == "project.godot":
         options.language = Language.Godot3
+    elif options.file_path == "setup.py":
+        options.language = Language.PythonSetup
     else:
         _, ext = os.path.splitext(options.file_path)
         exts = {
@@ -148,6 +151,7 @@ else:
         }
         options.language = exts.get(ext, Language.Unknown)
 
+
 if options.language == Language.Unknown:
     sys.stderr.write("Unknown language, cannot parse the file\n")
     if options.no_error:
@@ -157,6 +161,7 @@ if options.language == Language.Unknown:
 
 program_version_re = {
     Language.Python     : re.compile("version\s*=\s*\"(\d+)\.(\d+)\.(\d+).(\d+)\""),
+    Language.PythonSetup: re.compile("\s*version\s*=\s*\"(\d+)\.(\d+)\.(\d+).(\d+)\"\s*,\s*"),
     Language.Godot      : re.compile("version\s*=\s*\"(\d+)\.(\d+)\.(\d+).(\d+)\""),
     Language.Godot3     : re.compile("config/Version\s*=\s*\"(\d+)\.(\d+)\.(\d+).(\d+)\""),
     Language.Cpp        : re.compile("string\s+version\s*=\s*\"(\d+)\.(\d+)\.(\d+).(\d+)\""),
@@ -166,6 +171,7 @@ program_version_re = {
 
 program_version_update = {
     Language.Python     : "version = \"{}.{}.{}.{}\"",
+    Language.PythonSetup: "version = \"{}.{}.{}.{}\",",
     Language.Godot      : "config/Version=\"{}.{}.{}.{}\"",
     Language.Cpp        : "string version = \"{}.{}.{}.{}\"",
     Language.Haskell    : "version:             {}.{}.{}.{}",

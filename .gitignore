@@ -11,3 +11,6 @@ __pycache__/
 *.xml
 
 .versionrc
+.version_upgrade
+.nvim
+.*.sw[a-p]
