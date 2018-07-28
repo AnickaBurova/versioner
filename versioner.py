@@ -34,7 +34,7 @@ import re
 
 
 usage = "usage: %prog [options] file"
-version = "0.3.6.0"
+version = "0.4.0.0"
 version_text = "%prog {}".format(version)
 opt = OptionParser(usage = usage, version = version_text)
 opt.add_option  ("-l","--language"
@@ -169,13 +169,13 @@ program_version_re = {
     Language.Cpp        : re.compile("string\s+version\s*=\s*\"(\d+)\.(\d+)\.(\d+).(\d+)\""),
     Language.Haskell    : re.compile("version\s*:\s*(\d+)\.(\d+)\.(\d+).(\d+)"),
     Language.Rust       : re.compile("version\s*=\s*\"(\d+)\.(\d+)\.(\d+)\""),
-    Language.Go         : re.compile("const AppVersion\s*=\s*\"(\d+)\.(\d+)\.(\d+).(\d+)\""),
+    Language.Go         : re.compile("const PackageVersion\s*=\s*\"(\d+)\.(\d+)\.(\d+).(\d+)\""),
 }
 
 program_version_update = {
     Language.Python     : "version = \"{}.{}.{}.{}\"",
     Language.PythonSetup: "version = \"{}.{}.{}.{}\",",
-    Language.Go         : "const AppVersion = \"{}.{}.{}.{}\"",
+    Language.Go         : "const PackageVersion = \"{}.{}.{}.{}\"",
     Language.Godot      : "config/Version=\"{}.{}.{}.{}\"",
     Language.Cpp        : "string version = \"{}.{}.{}.{}\"",
     Language.Haskell    : "version:             {}.{}.{}.{}",
