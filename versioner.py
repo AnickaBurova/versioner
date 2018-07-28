@@ -74,7 +74,7 @@ opt.add_option  ("-v","--version-only"
 (options, args) = opt.parse_args()
 
 class Language:
-    Unknown, Python, PythonSetup, Haskell, Cpp, Rust, Godot, Godot3 = range(0,8)
+    Unknown, Python, PythonSetup, Haskell, Cpp, Rust, Godot, Godot3, Go = range(0,9)
 
     @staticmethod
     def languages():
@@ -95,6 +95,7 @@ class Language:
             "rust"  : Language.Rust,
             "godot" : Language.Godot,
             "godot3" : Language.Godot3,
+            "go"     : Language.Go,
         }
         if text in d:
             return d[text]
@@ -148,6 +149,7 @@ else:
             ".cabal" : Language.Haskell,
             ".hpp" : Language.Cpp,
             ".cpp" : Language.Cpp,
+            ".go"  : Language.Go,
         }
         options.language = exts.get(ext, Language.Unknown)
 
@@ -167,11 +169,13 @@ program_version_re = {
     Language.Cpp        : re.compile("string\s+version\s*=\s*\"(\d+)\.(\d+)\.(\d+).(\d+)\""),
     Language.Haskell    : re.compile("version\s*:\s*(\d+)\.(\d+)\.(\d+).(\d+)"),
     Language.Rust       : re.compile("version\s*=\s*\"(\d+)\.(\d+)\.(\d+)\""),
+    Language.Go         : re.compile("const AppVersion\s*=\s*\"(\d+)\.(\d+)\.(\d+).(\d+)\""),
 }
 
 program_version_update = {
     Language.Python     : "version = \"{}.{}.{}.{}\"",
     Language.PythonSetup: "version = \"{}.{}.{}.{}\",",
+    Language.Go         : "const AppVersion = \"{}.{}.{}.{}\"",
     Language.Godot      : "config/Version=\"{}.{}.{}.{}\"",
     Language.Cpp        : "string version = \"{}.{}.{}.{}\"",
     Language.Haskell    : "version:             {}.{}.{}.{}",
