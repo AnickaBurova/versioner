@@ -54,8 +54,19 @@ then
     exit 0
 fi
 
+gitdir=.git
 
-if [ ! -d .git ]
+if [ ! -d "$gitdir" ]
+then
+    echo no .git
+    if [ -f .git ]
+    then
+        echo .git is file
+        gitdir=$(grep gitdir .git | awk '{print $2;}')
+        echo $gitdir
+    fi
+fi
+if [ ! -d "$gitdir" ]
 then
     echo "cannot find .git folder, is this a git repository? exiting..."
     exit 1
@@ -87,9 +98,9 @@ echo "MAIN_VERSION_FILE=$main_file" >> .versionrc
 versioner_dir="$(dirname $0)"
 
 
-ln -sf $versioner_dir/versioner-pre-commit .git/hooks/pre-commit
-ln -sf $versioner_dir/versioner-commit-msg .git/hooks/commit-msg
-ln -sf $versioner_dir/versioner-post-commit .git/hooks/post-commit
+ln -sf $versioner_dir/versioner-pre-commit $gitdir/hooks/pre-commit
+ln -sf $versioner_dir/versioner-commit-msg $gitdir/hooks/commit-msg
+ln -sf $versioner_dir/versioner-post-commit $gitdir/hooks/post-commit
 touch .gitignore
 if ! grep ".versionrc" .gitignore 1>/dev/null
 then
